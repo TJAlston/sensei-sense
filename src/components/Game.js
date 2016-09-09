@@ -2,7 +2,43 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import cx from 'classnames'
 
+const API_URL= 'http://sensei-sense-api.herokuapp.com'
+
+const TOKEN = 'TJetta'
+
 class Game extends React.Component {
+    constructor () {
+      super()
+  }
+
+  componentDidMount () {
+    const gameId = window.localStorage.getItem('gameId')
+    if (gameId) {
+      window.fetch(`${API_URL}/games/${gameId}`)
+      .then((response) => {
+        return response.json()
+      }).then((data) => {
+        if (data.state === 'won' || data.state === 'lost') {
+          this.createGame()
+        } else {
+          this.setState(data)
+        }
+      })
+    } else {
+      this.createGame()
+    }
+  }
+
+  createGame () {
+    window.fetch(`${API_URL}/games?difficulty=${this.props.difficulty}`, {
+      method: 'POST'
+    }).then((response) => {
+      return response.json()
+    }).then((data) => {
+      this.setState(data)
+    })
+  }
+
 
   render () {
     return <div className='game'>

@@ -2,18 +2,43 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import cx from 'classnames'
 
-const API_URL= 'http://sensei-sense-api.herokuapp.com'
-
+const API_URL= 'https://sensei-sense-api.herokuapp.com'
 const TOKEN = 'TJetta'
 
 class Game extends React.Component {
     constructor () {
       super()
+      this.state = {
+        id: 1,
+        moves: [],
+        currentTurn: []  // array of color names
+    }
   }
 
-  createGame () {
-    window.fetch(`${API_URL}/games?access_token=${this.props.token}`, {
+  componentDidMount () {
+    window.fetch(`https://sensei-sense-api.herokuapp.com/games?access_token=${TOKEN}`, {
       method: 'POST'
+    }).then((response) => {
+      return response.json()
+    }).then((data) => {
+      this.setState({id: data.id, moves: data.moves})
+      console.log('data')
+    })
+  }
+
+  setColor = (color, position) => {
+    let colors = this.state.currentTurn.slice()
+    colors[position] = color
+    this.setState({ currentTurn: colors })
+  }
+
+  nextMove () {
+    window.fetch(`https://sensei-sense-api.herokuapp.com/games/move?access_token&game_id=${TOKEN}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        guess: this.state.currentTurn // ["fuschia", "blueberry", "coal", "fire"]
+      })
     }).then((response) => {
       return response.json()
     }).then((data) => {
@@ -21,16 +46,11 @@ class Game extends React.Component {
     })
   }
 
-  newMove () {
-    window.fetch(`${API_URL}/games/move?access_token&game_id=${this.props.token}`, {
-      method: 'POST'
-    }).then((response) => {
-      return response.json()
-    }).then((data) => {
-      this.setState(data)
-    })
+  handleGoClick = () => {
+    // if all four cups have colors...
+    this.nextMove()
+    // else dont do the next move
   }
-
 
   render () {
     return <div className='game'>
@@ -46,12 +66,12 @@ class Game extends React.Component {
         </div>
       </div>
       <div className='current turn'>
-        <Cup droppable />
-        <Cup droppable />
-        <Cup droppable />
-        <Cup droppable />
+        <Cup droppable setColor={this.setColor} position={0} />
+        <Cup droppable setColor={this.setColor} position={1} />
+        <Cup droppable setColor={this.setColor} position={2} />
+        <Cup droppable setColor={this.setColor} position={3} />
         <div className='go'>
-          <button>Go</button>
+          <button onClick={this.handleGoClick}>Go</button>
         </div>
       </div>
       <div className='color-well'>
@@ -103,6 +123,7 @@ class Cup extends React.Component {
 
   _handleDrop = (event) => {
     const color = event.dataTransfer.getData('text/plain')
+    this.props.setColor(color, this.props.position)
     this.setState({
       highlight: false,
       color: color

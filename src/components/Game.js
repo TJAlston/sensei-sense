@@ -11,26 +11,18 @@ class Game extends React.Component {
       super()
   }
 
-  componentDidMount () {
-    const gameId = window.localStorage.getItem('gameId')
-    if (gameId) {
-      window.fetch(`${API_URL}/games/${gameId}`)
-      .then((response) => {
-        return response.json()
-      }).then((data) => {
-        if (data.state === 'won' || data.state === 'lost') {
-          this.createGame()
-        } else {
-          this.setState(data)
-        }
-      })
-    } else {
-      this.createGame()
-    }
+  createGame () {
+    window.fetch(`${API_URL}/games?access_token=${this.props.token}`, {
+      method: 'POST'
+    }).then((response) => {
+      return response.json()
+    }).then((data) => {
+      this.setState(data)
+    })
   }
 
-  createGame () {
-    window.fetch(`${API_URL}/games?difficulty=${this.props.difficulty}`, {
+  newMove () {
+    window.fetch(`${API_URL}/games/move?access_token&game_id=${this.props.token}`, {
       method: 'POST'
     }).then((response) => {
       return response.json()

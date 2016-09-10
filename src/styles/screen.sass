@@ -28,6 +28,15 @@ h1
     position: center
     repeat: no-repeat
 
+h2
+  font-size: 30px
+
+h3
+  font-family: 'got bacon'
+  font-size: 30px
+  font-weight: bolder
+  letter-spacing: 10px
+
 .app
   display: flex
   flex-direction: column
@@ -46,6 +55,7 @@ header
 
 main
   background-color: $beige
+  margin: 0
 
 footer
   padding: 0.5em
@@ -132,6 +142,10 @@ $sprite-size: 16vw
     background-position-x: 0
     background-position-y: -$sprite-size
 
+.titlePage
+  height: 100vh
+  background-image: url('http://38.media.tumblr.com/2bd546bbc72da9a8ccf251922b1e05ac/tumblr_mqpoziggwt1s5jjtzo1_500.gif')
+
 .game
   position: absolute
   top: 0
@@ -175,8 +189,6 @@ $sprite-size: 16vw
     &.highlight
       filter: brightness(120%)
 
-  .pegs
-
   .go
     button
       display: block
@@ -185,18 +197,29 @@ $sprite-size: 16vw
 
   .previous
     flex: 1 1 auto
-    display: flex
-    flex-direction: column
-    justify-content: flex-end
+    padding: 10px
+    display: grid
+    justify-content: center
     overflow-y: auto
+    height: 100px
+    width: 125px
+    align-self: flex-end
+    border: 2px solid black
 
   .current
     background-color: $orange
     flex: 0 0 auto
+    border: 2px solid black
 
   .color-well
     background-color: darken($orange, 10%)
     flex: 0 0 auto
+
+  .playerChoice
+      margin: 0
+      padding: 0
+      display: flex
+      align-items: flex-end
 
   .draggable
     position: absolute
@@ -208,13 +231,19 @@ $sprite-size: 16vw
 
 .titlePage
   margin: 20px
+  display: flex
   align-content: center
   text-align: center
   text-transform: uppercase
   line-height: 25px
+  padding-left: 300px
+  padding-right: 350px
 
 li
     list-style: none
+    line-height: 30px
+    font-weight: bolder
+    font-size: 20px
 
 .titleButton
   height: 50px
@@ -233,3 +262,16 @@ li
 
 .go button
   border-radius: 10px
+
+
+.red
+  height: 50px
+  width: 50px
+
+.white
+  height: 50px
+  width: 50px
+
+.miss
+  height: 20px
+  width: 15px

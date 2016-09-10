@@ -1,7 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import cx from 'classnames'
-
+import whiteTag from '../images/white-tag.svg'
+import redTag from '../images/red-tag.svg'
+import blank from '../images/no-tag.svg'
 const API_URL= 'https://sensei-sense-api.herokuapp.com'
 const TOKEN = 'TJetta'
 
@@ -33,7 +35,7 @@ class Game extends React.Component {
   }
 
   nextMove () {
-    window.fetch(`https://sensei-sense-api.herokuapp.com/games/move?access_token&game_id=${TOKEN}`, {
+    window.fetch(`https://sensei-sense-api.herokuapp.com/games/move?access_token=${TOKEN}&game_id=${this.state.id}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -53,17 +55,39 @@ class Game extends React.Component {
   }
 
   render () {
+    const { moves, currentTurn } = this.state
     return <div className='game'>
+    <div className='turn'>
+      <Cup color='aqua' />
+      <Cup />
+      <Cup />
+      <Cup />
+    </div>
       <div className='previous'>
-        <div className='turn'>
-          <Cup color='aqua' />
-          <Cup />
-          <Cup />
-          <Cup />
-          <div className='pegs'>
-            TODO
-          </div>
-        </div>
+        {moves.map((lastTurn, i) => {
+        return <div className='playerChoice' key={i}>
+          {lastTurn.guess.map((guess, j) =>
+            <cup color={guess} key={j} />)}
+              <div className='pegs'>
+                {lastTurn.result.map((result, k) => {
+                  let token
+                  switch (result) {
+                    case 'inexact_match': token =
+                    <img className= 'white' src={whiteTag} alt='peg' />
+                      break
+                    case 'exact_match': token =
+                    <img className='red' src={redTag} alt='peg' />
+                      break
+                    case 'miss': token =
+                    <img className='miss' src={blank} alt='peg' />
+                      break
+                    default: token =
+                    <img src={blank} alt='peg' />
+                  }
+                  return <div className='peg' key={k}>{token}</div>
+                })}
+            </div>
+        </div> })}
       </div>
       <div className='current turn'>
         <Cup droppable setColor={this.setColor} position={0} />
@@ -75,7 +99,7 @@ class Game extends React.Component {
         </div>
       </div>
       <div className='color-well'>
-        <Well color='green' />
+        <Well color='emerald' />
         <Well color='aqua' />
         <Well color='fuschia' />
         <Well color='blueberry' />
